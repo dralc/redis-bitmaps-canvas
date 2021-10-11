@@ -1,0 +1,27 @@
+{
+  "name": "redis-bitmaps-canvas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "pm2 stop index &&   pm2 start index --watch &&   pm2 logs",
+    "flush": "pm2 flush index",
+    "mon": "pm2 monit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dralc/redis-bitmaps-canvas.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dralc/redis-bitmaps-canvas/issues"
+  },
+  "homepage": "https://github.com/dralc/redis-bitmaps-canvas#readme",
+  "dependencies": {
+    "ioredis": "^4.27.11"
+  },
+  "devDependencies": {
+    "pm2": "^5.1.2"
+  }
+}
