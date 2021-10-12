@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 stop index &&   pm2 start index --watch &&   pm2 logs",
-    "flush": "pm2 flush index",
+    "start": "pm2 start index.js --watch &&   pm2 logs",
+    "del": "pm2 del index.js",
+    "flush-logs": "pm2 flush index",
     "mon": "pm2 monit"
   },
   "repository": {
