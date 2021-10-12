@@ -2,6 +2,10 @@ const Redis = require('ioredis');
 
 const redis = new Redis();
 
+/**
+ * Reformats {@link buf} to binary
+ * @param {Buffer} buf
+ */
 const unpack = (buf) => {
 	const arr = []
 	for (let byte of buf) {
@@ -10,18 +14,55 @@ const unpack = (buf) => {
 		let byteHex = byte.toString(16)
 		
 		arr.push(
-			// format each 4 bit to a binary value
-			parseInt(byteHex[0]).toString(2).padStart(4, '0'),
-			parseInt(byteHex[1]).toString(2).padStart(4, '0'),
+			mapHexBitToColour(byteHex[0]),
+			mapHexBitToColour(byteHex[1]),
 		)
 	}
 	return arr
 }
 
+/**
+ * @param {String|Number} src The value to reformat to binary
+ * @param {Number} bitNum The maximum number of bits to pad
+ */
+const toBinary = (src, bitNum) => {
+	if (typeof src === 'string') src = parseInt(src);
+	return src.toString(2).padStart(bitNum, '0')
+}
+
+/**
+ * Maps a hex bit to a basic 32 bit colour
+ *
+ * @param {String} num Hex bit
+ * @returns 
+ */
+const mapHexBitToColour = (num) => {
+	const colors = {
+		0: '000000FF',
+		1: 'FFFFFFFF',
+		2: 'FF0000FF',
+		3: '00FF00FF',
+		4: '0000FFFF',
+		5: 'FFFF00FF',
+		6: '00FFFFFF',
+		7: 'FF00FFFF',
+		8: 'C0C0C0FF',
+  		9: '808080FF',
+		a: '800000FF',
+		b: '808000FF',
+		c: '008000FF',
+		d: '800080FF',
+  		e: '008080FF',
+  		f: '000080FF',
+	}
+
+	return colors[num];
+}
+
 // Gets all of the canvas data in one O(1) command. Unpack the data client-side
 redis.getBuffer('canvas', (er, buf) => {
 	console.log('get:', buf);
-	console.log('unpack:', unpack(buf))
+	console.log('unpacked colours:', unpack(buf))
 })
 
 // Gets the canvas data individually with an O(4) to O(n) command.
@@ -34,10 +75,9 @@ const bfargs = [
 ];
 
 redis.bitfield('canvas', bfargs, (er, bitfields) => {
-	console.log('bitfield:', bitfields)
-	// Format as 4 bit binary
-	const binArr = bitfields.map(bf => {
-		return bf.toString(2).padStart(4, '0');
+	console.log('bitfields:', bitfields)
+	const colours = bitfields.map(bf => {
+		return mapHexBitToColour(bf.toString(16));
 	})
-	console.log('binary:', binArr)
+	console.log('colours:', colours)
 })
