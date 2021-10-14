@@ -2,11 +2,11 @@
   "name": "redis-bitmaps-canvas",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server-index.js",
   "scripts": {
-    "start": "pm2 start index.js --watch &&   pm2 logs",
-    "del": "pm2 del index.js",
-    "flush-logs": "pm2 flush index",
+    "start": "pm2 start server-index.js --watch &&   pm2 logs",
+    "del": "pm2 del server-index.js",
+    "flush-logs": "pm2 flush server-index",
     "mon": "pm2 monit"
   },
   "repository": {
