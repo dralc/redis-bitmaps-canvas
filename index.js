@@ -3,21 +3,23 @@ const Redis = require('ioredis');
 const redis = new Redis();
 
 /**
- * Reformats {@link buf} to binary
+ * Maps the 4 bit numbers in {@link buf} to 32 bit colours
+ * 
  * @param {Buffer} buf
  */
-const unpack = (buf) => {
-	const arr = []
+const unpack = (buf, print) => {
+	let arr = []
 	for (let byte of buf) {
 		// eg. buf = <Buffer 18 52>
 		// Interpret '18' and '52' as hex values. Each unit (eg. '1' and '8') are 4 bits each
 		let byteHex = byte.toString(16)
-		
+
 		arr.push(
 			mapHexBitToColour(byteHex[0]),
 			mapHexBitToColour(byteHex[1]),
 		)
 	}
+	if (print) arr = arr.map(el => el.toString(16))
 	return arr
 }
 
@@ -38,22 +40,22 @@ const toBinary = (src, bitNum) => {
  */
 const mapHexBitToColour = (num) => {
 	const colors = {
-		0: '000000FF',
-		1: 'FFFFFFFF',
-		2: 'FF0000FF',
-		3: '00FF00FF',
-		4: '0000FFFF',
-		5: 'FFFF00FF',
-		6: '00FFFFFF',
-		7: 'FF00FFFF',
-		8: 'C0C0C0FF',
-  		9: '808080FF',
-		a: '800000FF',
-		b: '808000FF',
-		c: '008000FF',
-		d: '800080FF',
-  		e: '008080FF',
-  		f: '000080FF',
+		0: 0x000000FF, // RGBa
+		1: 0xFFFFFFFF,
+		2: 0xFF0000FF,
+		3: 0x00FF00FF,
+		4: 0x0000FFFF,
+		5: 0xFFFF00FF,
+		6: 0x00FFFFFF,
+		7: 0xFF00FFFF,
+		8: 0xC0C0C0FF,
+		9: 0x808080FF,
+		a: 0x800000FF,
+		b: 0x808000FF,
+		c: 0x008000FF,
+		d: 0x800080FF,
+		e: 0x008080FF,
+		f: 0x000080FF,
 	}
 
 	return colors[num];
@@ -63,6 +65,9 @@ const mapHexBitToColour = (num) => {
 redis.getBuffer('canvas', (er, buf) => {
 	console.log('get:', buf);
 	console.log('unpacked colours:', unpack(buf))
+	console.log('unpacked colours print:', unpack(buf, true))
+
+	//... then send to client for rendering
 })
 
 // Gets the canvas data individually with an O(4) to O(n) command.
