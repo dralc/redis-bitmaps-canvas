@@ -44,6 +44,22 @@ const renderToCanvas = (canvasId, canvasData, width) => {
 	ctx.putImageData(imageDat, 0, 0)
 }
 
-// Test
-const canvasData = Array.from({ length: 10000}, () => 0x0000ffff);
-renderToCanvas("canvas1", canvasData, 100);
+
+function* generatePixels(array, repeat) {
+	let count = 0 
+	let arIndex = -1;
+	const max = (array.length) * repeat; //?
+
+	while (count < max) {
+		if ((array.length - 1) === 0 || arIndex / (array.length - 1) === 1) {
+			arIndex = -1;
+		}
+		yield array[++arIndex]
+		count++
+	}
+}
+
+const it = generatePixels([0xff0000ff, 0xff0000ff, 0x00ff00ff, 0x00ff00ff, 0x0000ffff, 0x0000ffff], 42000)
+const canvasData = Array.from(it)
+console.log(canvasData)
+renderToCanvas("canvas1", canvasData, 500);
