@@ -59,7 +59,7 @@ function* generatePixels(array, repeat) {
 	}
 }
 
+// Simple static test to render to canvas
 const it = generatePixels([0xff0000ff, 0xff0000ff, 0x00ff00ff, 0x00ff00ff, 0x0000ffff, 0x0000ffff], 42000)
 const canvasData = Array.from(it)
-console.log(canvasData)
 renderToCanvas("canvas1", canvasData, 500);
